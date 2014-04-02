@@ -1,4 +1,5 @@
-= Tree Hierarchy <a href="http://badge.fury.io/rb/tree_hierarchy"><img src="https://badge.fury.io/rb/tree_hierarchy.svg" alt="Gem Version" height="18"></a>
+{<img src="https://badge.fury.io/rb/tree_hierarchy.svg" alt="Gem Version" />}[http://badge.fury.io/rb/tree_hierarchy]
+= Tree Hierarchy 
 1. Create a Tree Structure with parent-child relationship
 2. Much faster for creating tree hierarchy with large data
 3. Update the Parent value with  sum of its child values
@@ -14,22 +15,21 @@ gem 'tree_hierarchy'
 === Options: 
 
   most_parent.hierarchy(record)  # create a tree structure
-       <i> where most_parent - initial level
-                 record      - result_set which contain all the 
-                                 records in linear form.</i>
+       where most_parent - initial level
+             record      - result_set which contain all the records in linear form
   
   most_parent.hierarchy_level(record) # tree structure with level specifier 
-       <i> :level field is merged with the record to specify the level</i>
+        :level field is merged with the record to specify the level
   
   most_parent.hierarchy(record,depth) # define the depth (1..n)
   most_parent.hierarchy_level(record,depth) # depth with level specifier
 
   most_parent.added_hierarchy(record,depth,field1,field2,field3,field4,field5)
   most_parent.added_hierarchy_level(record,depth,field1,field2,field3,field4,field5)
-       <i> updating the parent value with its child value </i>
-       <i> field1..field5 specifies the field name </i>
-       <i> pass the field name as string to field argument</i>
-       <i> 0 as depth for showing complete tree structure </i>
+        updating the parent value with its child value 
+        field1..field5 specifies the field name
+        pass the field name as string to field argument
+        0 as depth for showing complete tree structure 
   
 
 == Usage :
@@ -37,7 +37,7 @@ gem 'tree_hierarchy'
 Shall we have Category table for our example
   
   record = Category.all
-=> #<Categoryid: 1,parent_id: nil,name: "Clothing",value1: 0,value2: 0>,
+   #<Categoryid: 1,parent_id: nil,name: "Clothing",value1: 0,value2: 0>,
    #<Categoryid: 2,parent_id: 1,name: "Men",value1: 0,value2: 0>,
    #<Categoryid: 3,parent_id: 1,name: "Women",value1: 0,value2: 0>,
    #<Categoryid: 6,parent_id: 3,name: "Sarees",value1: 40,value2: 80>,
@@ -49,8 +49,8 @@ Shall we have Category table for our example
 
   most_parent = record.first
   most_parent.hierarchy(record)
-
-=> {
+  output
+   {
     "id"=>1,
     "parent_id"=>nil,
     "name"=>"Clothing",
@@ -76,8 +76,8 @@ Shall we have Category table for our example
     <b>:level</b> field is merged with the result set for specifying the level
    
    most_parent.hierarchy_level(record)
-
-=> {
+   output
+  {
     "id"=>1,
     "parent_id"=>nil,
     "name"=>"Clothing",
@@ -112,12 +112,14 @@ Shall we have Category table for our example
   0 shows full tree_structure, but not necessary to mention
 
 === Adding the Child values and updating its parent
-      The child values are added and updated to its sub-parent and its sum value to its parent and the process continues till its most parent.
+      The child values are added and updated to its sub-parent and its sum value to
+ its parent and the process continues till its most parent.
 
   most_parent.added_hierarchy(record,depth,field1,field2,field3,field4,field5)
-  most_parent.added_hierarchy(record,0,'value1','value2')  # value1,value2 are field names,pass as string
-
-=> {
+  most_parent.added_hierarchy(record,0,'value1','value2') 
+                                # value1,value2 are field names,pass as string
+  output
+ {
     "id"=>1,
     "parent_id"=>nil,
     "name"=>"Clothing",
@@ -140,11 +142,18 @@ Shall we have Category table for our example
 
   The <b>value1,value2</b> fields are updated with the addition of its child value
 
-  most_parent.added_hierarchy_level(record,2,'value1','value2') # with :level field (level specifier) 
-  Presently designed for field1 .. field5, for adding more then 5 fields will be enhanced in future versions
+  most_parent.added_hierarchy_level(record,2,'value1','value2') 
+                           #Created with :level field (level specifier) 
+  Presently designed for field1 .. field5, for adding more then 5 fields 
+  will be enhanced in future versions
+  
   *Note: Should not give nil as field1 .. field5 values.
 
+=== Contributors
 
+  AMP Technologies, Dheenadhayalan
+
+Copyright © 2014 Dheenadhayalan, released under the MIT license
 
 
 
