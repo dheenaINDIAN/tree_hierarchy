@@ -1,0 +1,4 @@
+= Tree Hierarchy
+1. Create a Tree Structure with parent-child relationship
+2. Much faster for creating tree hierarchy with large datas
+3. Update the Parent value with its sum of child values
