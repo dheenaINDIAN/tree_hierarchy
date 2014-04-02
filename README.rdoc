@@ -26,10 +26,11 @@ gem 'tree_hierarchy'
 
   most_parent.added_hierarchy(record,depth,field1,field2,field3,field4,field5)
   most_parent.added_hierarchy_level(record,depth,field1,field2,field3,field4,field5)
-        updating the parent value with its child value 
-        field1..field5 specifies the field name
-        pass the field name as string to field argument
-        0 as depth for showing complete tree structure 
+        
+                         #updating the parent value with its child value 
+                         #field1..field5 specifies the field name
+                         #pass the field name as string to field argument
+                         #0 as depth for showing complete tree structure 
   
 
 == Usage :
@@ -49,6 +50,7 @@ Shall we have Category table for our example
 
   most_parent = record.first
   most_parent.hierarchy(record)
+
   output
    {
     "id"=>1,
@@ -73,10 +75,11 @@ Shall we have Category table for our example
      }
 
 === Create a tree_structure with level
-    <b>:level</b> field is merged with the result set for specifying the level
+    :level field is merged with the result set for specifying the level
    
    most_parent.hierarchy_level(record)
-   output
+   
+  output
   {
     "id"=>1,
     "parent_id"=>nil,
@@ -103,7 +106,7 @@ Shall we have Category table for our example
      }
 
 === Specify a depth level
-     Tree structure created till that specified level      
+   Tree structure created till the specified level by specifying depth      
 
    most_parent.hierarchy_level(record,2)  # with level field merged
    or
@@ -140,7 +143,7 @@ Shall we have Category table for our example
             ..... .....
    }
 
-  The <b>value1,value2</b> fields are updated with the addition of its child value
+  The value1,value2 fields are updated with the addition of its child value
 
   most_parent.added_hierarchy_level(record,2,'value1','value2') 
                            #Created with :level field (level specifier) 
