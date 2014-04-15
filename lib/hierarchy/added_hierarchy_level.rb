@@ -1,76 +1,98 @@
 module AddedHierarchyLevel
 
   @@result_group = []
+  @@linear = []
 
-  def added_hierarchy(result_set,depth = 0,*args)
+  def added_hierarchy(result_set,args,depth = 0)
     @@result_group = group_result_set(result_set)
     parent_child_add(args)
-    (depth == 0) ? self.tree_structure(result_set,@@result_group) : self.tree_structure_depth(result_set,@@result_group,depth.to_i)
+    level_check(depth) ? self.tree_structure(result_set,@@result_group) : self.tree_structure_depth(result_set,@@result_group,depth.to_i)
   end
  
-  def added_hierarchy_level(result_set,depth = 0, *args)
+  def added_hierarchy_level(result_set,args,depth = 0)
     @@result_group = group_result_set(result_set)
     parent_child_add(args)
-    (depth == 0) ? self.tree_structure_level(result_set,@@result_group) : self.tree_structure_depth_level(result_set,@@result_group,depth.to_i)
+    level_check(depth) ? self.tree_structure_level(result_set,@@result_group) : self.tree_structure_depth_level(result_set,@@result_group,depth.to_i)
+  end
+ 
+  def added_hchildren(result_set,args)
+    @@result_group = group_result_set(result_set)
+    parent_child_add(args)
+    self.hchildren_structure(result_set,@@result_group)
+  end
+  
+  def added_hchildren_ids(result_set,args)
+    @@result_group = group_result_set(result_set)
+    parent_child_add(args)
+    self.hchildren_structure_ids(result_set,@@result_group)
   end
 
+  def linear_level(result_set,depth = 0)
+    @@linear = []
+    result_group = group_result_set(result_set)
+    level_check(depth) ? self.linear_structure_level(result_set,result_group) : self.linear_structure_depth_level(result_set,result_group,depth.to_i)
+    return @@linear
+  end
+
+  def linear(result_set,depth = 0)
+    @@linear = []
+    result_group = group_result_set(result_set)
+    level_check(depth) ? self.linear_structure(result_set,result_group) : self.linear_structure_depth(result_set,result_group,depth.to_i)
+    return @@linear
+  end
+
+  def added_linear(result_set,args,depth = 0)
+    @@linear = []
+    @@result_group = group_result_set(result_set)
+    parent_child_add(args)
+    level_check(depth) ? self.linear_structure(result_set,@@result_group) : self.linear_structure_depth(result_set,@@result_group,depth.to_i)
+    return @@linear
+  end
+  
+  def added_linear_level(result_set,args,depth = 0)
+    @@linear = []
+    @@result_group = group_result_set(result_set)
+    parent_child_add(args)
+    level_check(depth) ? self.linear_structure_level(result_set,@@result_group) : self.linear_structure_depth_level(result_set,@@result_group,depth.to_i)
+    return @@linear
+  end
+ 
   def parent_child_add(field_set)
-    case field_set.length
-    when 0
-    when 1
-      calc_of_parent_one(field_set)
-    when 2
-      calc_of_parent_two(field_set)
-    when 3
-      calc_of_parent_three(field_set)
-    when 4
-      calc_of_parent_four(field_set)
-    else
-      calc_of_parent_five(field_set)
+    unless presence_check(@@result_group[self.id])
+      @@result_group[self.id].map{|x| x.parent_child_add(field_set)}
+        @@result_group[self.parent_id].each do|x| 
+          next unless x.id == self.id
+            for i in 0..field_set.length-1
+              x[field_set[i]] = total_calc(@@result_group[self.id],field_set[i])
+            end
+        end
+    end 
+  end
+
+  def linear_structure_level(result_set,result_group,increment = 1)
+    self.attributes.merge(:level => increment)
+    @@linear << self
+    result_group[self.id].map{|x| x.linear_structure_level(result_set,result_group,increment+1)} unless presence_check(result_group[self.id])
+  end
+
+  def linear_structure_depth_level(result_set,result_group,depth,increment = 1)
+    unless compare(increment,depth)
+      self.attributes.merge({:level => increment})
+      @@linear << self
+      result_group[self.id].map{|x| x.linear_structure_depth(result_set,result_group,depth,increment + 1)} unless presence_check(result_group[self.id]) 
     end
   end
 
-  # Code repetiation occurs to avoid unwanted conditions during execution 
-  # If these codes are combained together, more conditions need to check for each looping and updating of @@result_group become too complex, this affect the performance
-
-  def calc_of_parent_one(field_set)
-    unless @@result_group[self.id].blank?
-      @@result_group[self.id].map{|x| x.calc_of_parent_one(field_set)}
-      sum_value = total_calc(@@result_group[self.id],field_set[0]) 
-      @@result_group[self.parent_id].map{|x| x.id == self.id && x[field_set[0]] = sum_value}
-    end 
-  end
-  
-  def calc_of_parent_two(field_set)
-    unless @@result_group[self.id].blank?
-      @@result_group[self.id].map{|x| x.calc_of_parent_two(field_set)}
-      sum_value0,sum_value1 = total_calc(@@result_group[self.id],field_set[0]),total_calc(@@result_group[self.id],field_set[1])
-      @@result_group[self.parent_id].map{|x| (x.id == self.id) && (x[field_set[0]] = sum_value0) && (x[field_set[1]] = sum_value1)}
-    end 
+  def linear_structure(result_set,result_group)
+    @@linear << self
+    result_group[self.id].map{|x| x.linear_structure(result_set,result_group)} unless presence_check(result_group[self.id])
   end
 
-  def calc_of_parent_three(field_set)
-    unless @@result_group[self.id].blank?
-      @@result_group[self.id].map{|x| x.calc_of_parent_three(field_set)}
-      sum_value0,sum_value1,sum_value2 = total_calc(@@result_group[self.id],field_set[0]),total_calc(@@result_group[self.id],field_set[1]),total_calc(@@result_group[self.id],field_set[2])
-      @@result_group[self.parent_id].map{|x| (x.id == self.id) && (x[field_set[0]] = sum_value0) && (x[field_set[1]] = sum_value1) && (x[field_set[2]] = sum_value2)}
-    end 
-  end
-
-  def calc_of_parent_four(field_set)
-    unless @@result_group[self.id].blank?
-      @@result_group[self.id].map{|x| x.calc_of_parent_four(field_set)}
-      sum_value0,sum_value1,sum_value2,sum_value3 = total_calc(@@result_group[self.id],field_set[0]),total_calc(@@result_group[self.id],field_set[1]),total_calc(@@result_group[self.id],field_set[2]),total_calc(@@result_group[self.id],field_set[3])
-      @@result_group[self.parent_id].map{|x| (x.id == self.id) && (x[field_set[0]] = sum_value0) && (x[field_set[1]] = sum_value1) && (x[field_set[2]] = sum_value2) && (x[field_set[3]] = sum_value3)}
-    end 
-  end
-
-  def calc_of_parent_five(field_set)
-    unless @@result_group[self.id].blank?
-      @@result_group[self.id].map{|x| x.calc_of_parent_five(field_set)}
-      sum_value0,sum_value1,sum_value2,sum_value3,sum_value4 = total_calc(@@result_group[self.id],field_set[0]),total_calc(@@result_group[self.id],field_set[1]),total_calc(@@result_group[self.id],field_set[2]),total_calc(@@result_group[self.id],field_set[3]),total_calc(@@result_group[self.id],field_set[4])
-      @@result_group[self.parent_id].map{|x| (x.id == self.id) && (x[field_set[0]] = sum_value0) && (x[field_set[1]] = sum_value1) && (x[field_set[2]] = sum_value2) && (x[field_set[3]] = sum_value3) && (x[field_set[4]] = sum_value4)}
-    end 
+  def linear_structure_depth(result_set,result_group,depth,increment = 1)
+    unless compare(increment,depth)
+      @@linear << self
+      result_group[self.id].map{|x| x.linear_structure_depth(result_set,result_group,depth,increment + 1)} unless presence_check(result_group[self.id]) 
+    end
   end
 
 end
