@@ -23,9 +23,5 @@ module SupportMethod
   def nil_check(value)
     value ? value.to_i : value
   end
- 
-  def merge_level(record,level)
-    record.attributes.merge({:level => increment})
-  end
   
 end
