@@ -13,7 +13,7 @@ module AddedHierarchyLevel
   
   def added_hierarchy_calc(result_set,args,depth,type)
     initial = initial_load(result_set,args)
-    method_detection(result_set,args,depth,type,self,@@result_group)
+    method_detection(result_set,depth,type,self,@@result_group)
   end
 
   def added_hchildren(result_set,args)
@@ -36,7 +36,7 @@ module AddedHierarchyLevel
 
   def linear_calc(result_set,depth,type)  
     result_group = linear_load(result_set)
-    method_detection(result_set,args,depth,type,self,result_group)
+    method_detection(result_set,depth,type,self,result_group)
     return @@linear
   end
  
@@ -50,11 +50,11 @@ module AddedHierarchyLevel
 
   def added_calc(result_set,args,depth,type)
     initial = added_linear_load(result_set,args)
-    method_detection(result_set,args,depth,type,initial,@@result_group)
+    method_detection(result_set,depth,type,initial,@@result_group)
     return @@linear
   end 
   
-  def method_detection(result_set,args,depth,type,initial,result_group)
+  def method_detection(result_set,depth,type,initial,result_group)
     level_check(depth) ? initial.send(type,result_set,result_group) : initial.send(type+'_depth',result_set,@@result_group,depth.to_i)
   end
 
@@ -87,7 +87,7 @@ module AddedHierarchyLevel
   def linear_structure_level_depth(result_set,result_group,depth,increment = 1)
     unless compare(increment,depth)
       @@linear << self.attributes.merge({:level => increment})
-      result_group[self.id].map{|x| x.linear_structure_level_depth(result_set,result_group,depth,increment + 1)} unless presence_check(result_group[self.id]) 
+      linear_method_detection(result_set,result_group,depth,increment,'linear_structure_level_depth')
     end
   end
 
@@ -99,8 +99,12 @@ module AddedHierarchyLevel
   def linear_structure_depth(result_set,result_group,depth,increment = 1)
     unless compare(increment,depth)
       @@linear << self
-      result_group[self.id].map{|x| x.linear_structure_depth(result_set,result_group,depth,increment + 1)} unless presence_check(result_group[self.id]) 
+      linear_method_detection(result_set,result_group,depth,increment,'linear_structure_depth')
     end
+  end
+
+  def linear_method_detection(result_set,result_group,depth,increment,type)
+    result_group[self.id].map{|x| x.send(type,result_set,result_group,depth,increment + 1)} unless presence_check(result_group[self.id]) 
   end
 
 private
