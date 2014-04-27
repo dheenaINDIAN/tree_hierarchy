@@ -1,7 +1,7 @@
 module SupportMethod
 
   def group_result_set(result_set)
-    result_set.group_by{|x| x.parent_id ? x.parent_id.to_i : x.parent_id }
+    result_set.group_by{|x| nil_check(x.parent_id) }
   end
 
   def total_calc(result_group,field_set)
@@ -19,4 +19,13 @@ module SupportMethod
   def compare(arg1,arg2)
     arg1 > arg2
   end
+  
+  def nil_check(value)
+    value ? value.to_i : value
+  end
+ 
+  def merge_level(record,level)
+    record.attributes.merge({:level => increment})
+  end
+  
 end
