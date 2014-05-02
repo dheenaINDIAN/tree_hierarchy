@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.name        = 'tree_hierarchy'
   s.version     = TreeHierarchy::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.date        = '2014-04-15'
+  s.date        = '2014-05-02'
   s.summary     = "Create a tree structure and update the parent with sum of its child value"
   s.description = <<-EOF
   
