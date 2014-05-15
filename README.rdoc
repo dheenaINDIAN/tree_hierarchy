@@ -8,19 +8,19 @@
     "id"=>1,
     "parent_id"=>nil,
     "budget"=>25,              ---> (15+10)sum of child value    
-    : level=>3,                ---> (3) 3rd level
+    : level=>1,                ---> (1) 1rd level
     : children=>[              --->  children line items
         {
             "id"=>2,
             "parent_id"=>1,
             "budget"=>15,      ---> (15) sum of child value
-            :level=>2          ---> (2) 2nd level
+            :level=>2,          ---> (2) 2nd level
             : children=>[
                 {
                     "id"=>4,
                     "parent_id"=>2,
                     "budget"=>15,
-                    :level=>1,
+                    :level=>3,
                     :children=>nil
                  }]
         },
